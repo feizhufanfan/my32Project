@@ -31,7 +31,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+static int uart_init(void);
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

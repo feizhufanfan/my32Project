@@ -64,7 +64,7 @@ void SystemClock_Config(void);
   * @retval int
   */
 uint16_t pwm_set = 0;
-uint16_t pwm_max = 5000;
+uint16_t pwm_max = 4000;
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
     if (htim->Instance==TIM1){
         static int pwm_val=0;
@@ -101,20 +101,20 @@ int main(void)
   MX_GPIO_Init();
   MX_TIM1_Init();
   MX_TIM2_Init();
-  MX_USART1_UART_Init();
-  MX_USART2_UART_Init();
+  //MX_USART1_UART_Init();
+  //MX_USART2_UART_Init();
 
   while (1)
   {
       if(dir)
       {
-          rt_thread_delay(1);
+          rt_thread_mdelay(1);
           pwm_set++;
-          if(pwm_set == pwm_max) dir = 0;
+          if(pwm_set ==pwm_max) dir = 0;
       }
       if(!dir)
       {
-          rt_thread_delay(1);
+          rt_thread_mdelay(1);
           pwm_set--;
           if(pwm_set == 0) dir = 1;
       }

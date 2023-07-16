@@ -44,6 +44,7 @@ void SysTick_Handler(void)
 /**
  * This function will initial your board.
  */
+
 void rt_hw_board_init(void)
 {
     extern void SystemClock_Config(void);
@@ -57,7 +58,7 @@ void rt_hw_board_init(void)
      * periodically with the frequency RT_TICK_PER_SECOND. 
      */
     HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/RT_TICK_PER_SECOND);
-
+    uart_init();
     /* Call components board initial (use INIT_BOARD_EXPORT()) */
 #ifdef RT_USING_COMPONENTS_INIT
     rt_components_board_init();
@@ -74,8 +75,8 @@ static UART_HandleTypeDef UartHandle;
 static int uart_init(void)
 {
     /* TODO: Please modify the UART port number according to your needs */
-    UartHandle.Instance = USART2;
-    UartHandle.Init.BaudRate = 115200;
+    UartHandle.Instance = USART1;
+    UartHandle.Init.BaudRate = 9600;
     UartHandle.Init.WordLength = UART_WORDLENGTH_8B;
     UartHandle.Init.StopBits = UART_STOPBITS_1;
     UartHandle.Init.Parity = UART_PARITY_NONE;
@@ -89,7 +90,7 @@ static int uart_init(void)
     }
     return 0;
 }
-INIT_BOARD_EXPORT(uart_init);
+//INIT_BOARD_EXPORT(uart_init);
 
 void rt_hw_console_output(const char *str)
 {
