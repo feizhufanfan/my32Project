@@ -22,34 +22,10 @@
 #include "usart.h"
 #include "gpio.h"
 #include "rtthread.h"
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
-
-/* USER CODE END Includes */
-
-/* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN PTD */
-
-/* USER CODE END PTD */
-
-/* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD */
-
-/* USER CODE END PD */
-
-/* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN PM */
-
-/* USER CODE END PM */
-
-/* Private variables ---------------------------------------------------------*/
-
-/* USER CODE BEGIN PV */
-
-/* USER CODE END PV */
-
-/* Private function prototypes -----------------------------------------------*/
-void SystemClock_Config(void);
+#include "Servos.h"
+#define SerovsGPIOX GPIOA
+#define SerovsGPIOPin GPIO_PIN_6
+extern "C" void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -65,13 +41,29 @@ void SystemClock_Config(void);
   */
 uint16_t pwm_set = 0;
 uint16_t pwm_max = 4000;
+Servos Servos1;
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
-    if (htim->Instance==TIM1){
-        static int pwm_val=0;
+    if (htim->Instance==TIM1){//2Mhz   周期5us
+        static uint16_t pwm_val=0;
+        static uint16_t Count=0;
         pwm_val++;
-        if(pwm_val<pwm_set) HAL_GPIO_WritePin(GPIOC,GPIO_PIN_13,RESET);
-        if(pwm_val>pwm_set) HAL_GPIO_WritePin(GPIOC,GPIO_PIN_13,SET);
+        if(pwm_val<pwm_set) HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, static_cast<GPIO_PinState>(RESET));
+        if(pwm_val>pwm_set) HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, static_cast<GPIO_PinState>(SET));
         if(pwm_val == pwm_max) pwm_val = 0;
+
+        if(Count%4000==0){//20ms的周期
+
+           // HAL_GPIO_WritePin(SerovsGPIOX, SerovsGPIOPin, static_cast<GPIO_PinState>(SET));
+           Servos1.SetisTro(true);
+
+        }
+        if (Count%40000){
+
+            Servos1.SetAngle(Count%180);
+
+        }
+
+        Count++;
     }
 }
 
@@ -79,11 +71,15 @@ int main(void)
 {
     uint8_t dir = 1;
 
-  MX_GPIO_Init();
-  MX_TIM1_Init();
-  MX_TIM2_Init();
-  //MX_USART1_UART_Init();
-  MX_USART2_UART_Init();
+    Servos1.InitGpiodef(SerovsGPIOX, SerovsGPIOPin);
+
+    MX_GPIO_Init();
+    MX_TIM1_Init();
+    MX_TIM2_Init();
+    //MX_USART1_UART_Init();
+    MX_USART2_UART_Init();
+
+
 
   while (1)
   {
@@ -101,7 +97,11 @@ int main(void)
           if(pwm_set == 0) dir = 1;
       }
 
-
+      if (Servos1.GetisTro()){
+          HAL_GPIO_WritePin(SerovsGPIOX, SerovsGPIOPin, static_cast<GPIO_PinState>(SET));
+          rt_thread_delay(Servos1.GetDelay());
+          HAL_GPIO_WritePin(SerovsGPIOX, SerovsGPIOPin, static_cast<GPIO_PinState>(RESET));
+      }
 
     /* USER CODE BEGIN 3 */
   }

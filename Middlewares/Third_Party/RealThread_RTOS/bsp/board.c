@@ -8,8 +8,8 @@
  * 2021-05-24                  the first version
  */
 
-#include <rthw.h>
-#include <rtthread.h>
+#include "rthw.h"
+#include "rtthread.h"
 
 #include "main.h"
 
