@@ -49,7 +49,7 @@
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
-void SystemClock_Config(void);
+extern "C" void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -65,12 +65,12 @@ void SystemClock_Config(void);
   */
 uint16_t pwm_set = 0;
 uint16_t pwm_max = 4000;
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+extern "C" void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
     if (htim->Instance==TIM1){
         static int pwm_val=0;
         pwm_val++;
-        if(pwm_val<pwm_set) HAL_GPIO_WritePin(GPIOC,GPIO_PIN_13,RESET);
-        if(pwm_val>pwm_set) HAL_GPIO_WritePin(GPIOC,GPIO_PIN_13,SET);
+        if(pwm_val<pwm_set) HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, static_cast<GPIO_PinState>(RESET));
+        if(pwm_val>pwm_set) HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, static_cast<GPIO_PinState>(SET));
         if(pwm_val == pwm_max) pwm_val = 0;
     }
 }
