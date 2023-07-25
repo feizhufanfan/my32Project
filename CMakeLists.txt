@@ -51,6 +51,8 @@ endif ()
 
 include_directories(Core/Inc
         Core/ServosDriver
+        Core/MPU6050
+        Core/OLED
         RT-Thread Drivers/STM32F1xx_HAL_Driver/Inc/Legacy Drivers/STM32F1xx_HAL_Driver/Inc Drivers/CMSIS/Device/ST/STM32F1xx/Include Drivers/CMSIS/Include Middlewares/Third_Party/RealThread_RTOS/include/ Middlewares/Third_Party/RealThread_RTOS/bsp/_template/cubemx_config Middlewares/Third_Party/RealThread_RTOS/finsh/ Middlewares/Third_Party/RealThread_RTOS/components/finsh)
 
 add_definitions(-DDEBUG -DUSE_HAL_DRIVER -DSTM32F103x6)
